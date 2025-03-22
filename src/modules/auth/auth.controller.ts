@@ -8,13 +8,11 @@ import { SwaggerConsumes } from 'src/common/enums/swagger-consume.enum';
 @ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-    @Post(`user-esxistence`)
-    @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
-    @ApiBody({ type: AuthDto }) 
-    userExistence(@Body() authDto: AuthDto) {
-       const result =  this.authService.userExistence(authDto);
-       return result
-    }
-
-  
+  @Post(`user-esxistence`)
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  @ApiBody({ type: AuthDto })
+  userExistence(@Body() authDto: AuthDto) {
+    const result = this.authService.userExistence(authDto);
+    return result;
+  }
 }

@@ -16,4 +16,4 @@ export function SwaggerConfigInit(app:INestApplication): void {
   SwaggerModule.setup("/swagger", app, swaggerDocument);
   const swaggerJsonPath = join(process.cwd(), '/src/swagger/swagger.json');
   writeFileSync(swaggerJsonPath, JSON.stringify(swaggerDocument, null, 2));
-}
+} 
