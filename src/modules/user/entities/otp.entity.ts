@@ -5,11 +5,11 @@ import { EntityName } from 'src/common/enums/entity.enum';
 
 @Entity(EntityName.Otp)
 export class OtpEntity extends BaseEntity {
-  @Column()
+  @Column({nullable:true})
   phone_number: string;
 
   @Column()
-  otp_code: number;
+  otp_code: string;
 
   @Column({ type: 'timestamp' })
   expires_at: Date;

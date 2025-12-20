@@ -7,6 +7,7 @@ import { TypeOrmDbConfig } from 'src/config/typeorm.config';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { SwaggerController } from './swagger.controller';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
@@ -17,9 +18,11 @@ import { SwaggerController } from './swagger.controller';
     TypeOrmModule.forRoot(TypeOrmDbConfig()),
     UserModule,
     AuthModule,
-    
+    CategoryModule,
+
   ],
-  controllers: [SwaggerController,],
+  controllers: [SwaggerController], 
+    
   providers: [],
 })
 export class AppModule {}

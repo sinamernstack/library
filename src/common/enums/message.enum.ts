@@ -1,24 +1,28 @@
 export enum AuthMessage {
-    UserNotFound = 'حساب کاربری یافت نشد',
-    UserAlreadyExist = 'حساب کاربری قبلا ثبت شده است',
+  UserNotFound = 'حساب کاربری یافت نشد',
+  UserAlreadyExist = 'حساب کاربری قبلا ثبت شده است',
+  ExpireCode = 'کد تایید منقضی شده',
+  TryAgain = 'لطفا دوباره امتحان کنید',
+  InvalidCode = 'کد وارد شده صحیح نمیباشد',
+  LoginAgain = 'لطفا دوباره وارد شوید',
+  LoginOnYourAccount = 'لطفا وارد حساب کاربری خود شوید',
 }
 export enum AuthSuccessMessage {
-    LoginSuccess = 'Login success',
-    RegisterSuccess = 'Register success',
+  LoginSuccess = 'ورود با موفقیت انجام شد',
+  RegisterSuccess = 'ثبت نام با موفقیت انجام شد',
 }
 
 export enum NotFoundMessage {
-    UserNotFound = 'User not found',
-
+  UserNotFound = 'User not found',
 }
 export enum BadRequestMessage {
-    UserAlreadyExist = 'User already exist',
-    InvalidLoginData="اطلاعات ارسال شده برای ورود صحیح نمیباشد",
-    InvalidRegisterData="اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد"
-
-
-
+  UserAlreadyExist = 'حساب کاربری قبلا ثبت شده است',
+  InvalidLoginData = 'اطلاعات ارسال شده برای ورود صحیح نمیباشد',
+  InvalidRegisterData = 'اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد',
 }
-export enum ValidationMessage {
 
+export enum ValidationMessage {}
+
+export enum SendOtpMessage {
+  OtpSendSuccess = 'کد تایید با موفقیت ارسال شد',
 }
