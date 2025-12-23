@@ -11,13 +11,15 @@ import { OtpEntity } from '../user/entities/otp.entity';
 import { JwtService } from '@nestjs/jwt';
 import { TokenService } from './token.service';
 import { AuthGuard } from './guards/auth.guard';
+import { CategoryService } from '../category/category.service';
+import { CategoryEntity } from '../category/entities/category.entity';
 
 @Module({
   controllers: [AuthController,UserController],
-  providers: [AuthService,UserService,TokenService,JwtService,AuthGuard],
+  providers: [AuthService,UserService,TokenService,JwtService,AuthGuard,CategoryService],exports: [AuthService,TokenService],
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([UserEntity, ProfileEntity, OtpEntity])
+    TypeOrmModule.forFeature([UserEntity, ProfileEntity, OtpEntity,CategoryEntity])
   ],
 })
 export class AuthModule {}
