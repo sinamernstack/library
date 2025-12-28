@@ -1,24 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import {  Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
+import { ConflictMessage, publicMessage } from 'src/common/enums/message.enum';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { log } from 'console';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(CategoryEntity) private categoryRepository :Repository<CategoryEntity>
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
-  create(createCategoryDto: CreateCategoryDto) {
-    const{title, priority} = createCategoryDto
-const category = this.categoryRepository.create({title, priority})
-    return category;
-    
+  async create(createCategoryDto: CreateCategoryDto) {
+    let { title, priority } = createCategoryDto;
+    title = await this.checkExistAndResolveTitle(title);
+    const category = this.categoryRepository.create({ title, priority });
+    await this.categoryRepository.save(category);
+    return {
+      message: publicMessage.Created,
+      data: category,
+    };
   }
 
-  findAll() {
-    return `This action returns all category`;
+  findAll(paginationDto:PaginationDto) {
+    console.log(paginationDto);
+    return this.categoryRepository.findBy({});
   }
 
   findOne(id: number) {
@@ -32,4 +41,11 @@ const category = this.categoryRepository.create({title, priority})
   remove(id: number) {
     return `This action removes a #${id} category`;
   }
+  async checkExistAndResolveTitle(inputTitle: string) {
+    const title = inputTitle?.trim().toLowerCase();
+    const category = await this.categoryRepository.findOneBy({ title });
+    if (category) {
+      throw new ConflictException(ConflictMessage.CategoryTitleExist);
+    }
+    return title  }
 }
