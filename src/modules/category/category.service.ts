@@ -7,6 +7,7 @@ import { CategoryEntity } from './entities/category.entity';
 import { ConflictMessage, publicMessage } from 'src/common/enums/message.enum';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { log } from 'console';
+import { paginationGenerator, paginationSolver } from 'src/common/utils/pagination.util';
 
 @Injectable()
 export class CategoryService {
@@ -25,9 +26,18 @@ export class CategoryService {
     };
   }
 
-  findAll(paginationDto:PaginationDto) {
-    console.log(paginationDto);
-    return this.categoryRepository.findBy({});
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit, skip } = paginationSolver(paginationDto);
+    const [categories, count] = await this.categoryRepository.findAndCount({
+      skip,
+      take: limit,
+      where: {},
+    });
+    return {
+      message: publicMessage.Success,
+      data: categories,
+      pagination: paginationGenerator(count, limit, page),
+    };
   }
 
   findOne(id: number) {
@@ -47,5 +57,6 @@ export class CategoryService {
     if (category) {
       throw new ConflictException(ConflictMessage.CategoryTitleExist);
     }
-    return title  }
+    return title;
+  }
 }
