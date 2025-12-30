@@ -1,3 +1,103 @@
+# Virgool (Backend)
+
+یک پروژهٔ بک‌اند نوشته‌شده با NestJS برای اپلیکیشن Virgool — شامل ماژول‌های کاربران، احراز هویت، دسته‌بندی و کانفیگ TypeORM/Postgres.
+
+## وضعیت
+
+- زبان: TypeScript
+- فریم‌ورک: NestJS
+- دیتابیس: PostgreSQL (TypeORM)
+
+## امکانات
+
+- ثبت‌نام و مدیریت کاربران (OTP، پروفایل)
+- احراز هویت با JWT
+- مدیریت دسته‌بندی‌ها
+- داکیومنت API با Swagger
+
+## ملزومات (Prerequisites)
+
+- Node.js >= 18
+- npm یا yarn
+- PostgreSQL
+
+## متغیرهای محیطی موردنیاز
+
+در ریشهٔ پروژه یک فایل `.env` بسازید و حداقل متغیرهای زیر را تکمیل کنید:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=yourpassword
+DB_DATABASE=virgool_db
+JWT_SECRET=change_this_secret
+PORT=3000
+```
+
+## راه‌اندازی سریع (Development)
+
+1. نصب پکیج‌ها:
+
+```bash
+npm install
+```
+
+2. اجرای سرور در حالت توسعه:
+
+```bash
+npm run start:dev
+```
+
+3. دسترسی به Swagger (در صورت فعال):
+
+```
+http://localhost:3000/api
+```
+
+## بیلد و اجرا (Production)
+
+```bash
+npm run build
+npm run start:prod
+```
+
+## تست و lint
+
+```bash
+npm run lint
+npm test
+```
+
+## کانفیگ دیتابیس
+
+پروژه از TypeORM استفاده می‌کند. کانفیگ در `src/config/typeorm.config.ts` قابل‌تنظیم است — در حالت پیش‌فرض `synchronize: true` فعال است که برای توسعه مناسب است اما در محیط پروداکشن توصیه نمی‌شود.
+
+## ساختار پروژه (مهم‌ترین مسیرها)
+
+- `src/modules/user` — ماژول کاربر و موجودیت‌ها
+- `src/modules/auth` — لاجیک احراز هویت
+- `src/modules/category` — دسته‌بندی‌ها
+- `src/config` — تنظیمات اپ (Swagger، TypeORM)
+- `src/swagger` — فایل‌های صادرشده Swagger
+
+## نکات مهم برای توسعه‌دهنده
+
+- قبل از باز کردن PR مطمئن شوید `npm run lint` بدون خطا اجرا می‌شود.
+- برای تغییر ساختار دیتابیس از migrations استفاده کنید (در حال حاضر پروژه از `synchronize` استفاده می‌کند).
+
+## مشارکت
+
+اگر می‌خواهید کمک کنید یا باگ گزارش کنید، یک issue باز کنید یا یک pull request ارسال نمایید.
+
+## تماس
+
+در صورت نیاز به راهنمایی، لاگ خطا را ارسال کنید تا سریع‌تر کمک کنم.
+
+---
+
+به‌روزرسانی شد: README برای نمایش بهتر در GitHub و راه‌اندازی محلی آماده است.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { ProfileEntity } from 'src/modules/user/entities/profile.entity';
 
 export function TypeOrmDbConfig(): TypeOrmModuleOptions {
   const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } =
@@ -17,6 +18,7 @@ export function TypeOrmDbConfig(): TypeOrmModuleOptions {
     entities: [
       'dist/**/**/**/*.entity{.ts,.js}',
       'dist/**/**/*.entity{.ts,.js}',
+      ProfileEntity
     ],
   };
 }

@@ -12,11 +12,12 @@ import { OtpEntity } from './otp.entity';
 
 @Entity(EntityName.User)
 export class UserEntity extends BaseEntity {
-  @Column({ unique: true, nullable: false })
+  @Column({ unique: true, nullable: true })
   username: string;
 
   @Column({ unique: true, nullable: true })
   phone: string;
+
 
   @Column({ unique: true, nullable: true })
   email: string;
