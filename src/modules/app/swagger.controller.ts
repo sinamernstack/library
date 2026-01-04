@@ -6,7 +6,7 @@ import { join } from 'path';
 export class SwaggerController {
   @Get('/swagger.json')
   getSwaggerJson(@Res() res: Response) {
-    const filePath = join(process.cwd(), "/src/swagger/swagger.json"); 
+    const filePath = join(process.cwd(), '/src/swagger/swagger.json');
     res.setHeader('Content-Type', 'application/json');
     res.sendFile(filePath);
   }

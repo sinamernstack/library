@@ -5,7 +5,7 @@ import { EntityName } from 'src/common/enums/entity.enum';
 
 @Entity(EntityName.Otp)
 export class OtpEntity extends BaseEntity {
-  @Column({nullable:true})
+  @Column({ nullable: true })
   phone_number: string;
 
   @Column()
@@ -18,7 +18,7 @@ export class OtpEntity extends BaseEntity {
   @Column({ nullable: true })
   userId: number;
 
-  @OneToOne(() => UserEntity, (user) => user.otp, { onDelete: 'CASCADE' })
+  @OneToOne(() => UserEntity, user => user.otp, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' }) // نام فیلد کلید خارجی در دیتابیس
   user: UserEntity;
 }

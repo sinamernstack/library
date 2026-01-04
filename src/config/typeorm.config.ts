@@ -4,8 +4,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ProfileEntity } from 'src/modules/user/entities/profile.entity';
 
 export function TypeOrmDbConfig(): TypeOrmModuleOptions {
-  const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } =
-    process.env;
+  const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
   return {
     type: 'postgres',
     port: +DB_PORT,
@@ -15,10 +14,6 @@ export function TypeOrmDbConfig(): TypeOrmModuleOptions {
     database: DB_DATABASE,
     synchronize: true,
     autoLoadEntities: false,
-    entities: [
-      'dist/**/**/**/*.entity{.ts,.js}',
-      'dist/**/**/*.entity{.ts,.js}',
-      ProfileEntity
-    ],
+    entities: ['dist/**/**/**/*.entity{.ts,.js}', 'dist/**/**/*.entity{.ts,.js}', ProfileEntity]
   };
 }

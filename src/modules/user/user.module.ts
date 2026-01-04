@@ -8,9 +8,8 @@ import { OtpEntity } from './entities/otp.entity';
 
 @Module({
   controllers: [UserController],
-  imports:[TypeOrmModule.forFeature([UserEntity,ProfileEntity,OtpEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity, OtpEntity])],
   providers: [UserService],
-  exports:[UserService,TypeOrmModule]
-  
+  exports: [UserService, TypeOrmModule]
 })
 export class UserModule {}

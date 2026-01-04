@@ -7,8 +7,8 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategoryEntity]), AuthModule,UserModule],
+  imports: [TypeOrmModule.forFeature([CategoryEntity]), AuthModule, UserModule],
   controllers: [CategoryController],
-  providers: [CategoryService],
+  providers: [CategoryService]
 })
 export class CategoryModule {}
