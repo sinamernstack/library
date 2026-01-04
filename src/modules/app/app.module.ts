@@ -13,16 +13,15 @@ import { CategoryModule } from '../category/category.module';
   imports: [
     ConfigModule.forRoot({
       envFilePath: join(process.cwd(), '.env'),
-      isGlobal: true,
+      isGlobal: true
     }),
     TypeOrmModule.forRoot(TypeOrmDbConfig()),
     UserModule,
     AuthModule,
-    CategoryModule,
-
+    CategoryModule
   ],
-  controllers: [SwaggerController], 
-    
-  providers: [],
+  controllers: [SwaggerController],
+
+  providers: []
 })
 export class AppModule {}

@@ -27,7 +27,7 @@ export class AuthController {
   }
 
   @Get('check-login')
-  @ApiBearerAuth("Authorization")
+  @ApiBearerAuth('Authorization')
   @UseGuards(AuthGuard)
   async checkLogin(@Req() req: Request) {
     return req.user;

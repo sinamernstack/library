@@ -1,8 +1,8 @@
 export type CookiePayload = {
-   userId: number;
+  userId: number;
 };
 export type AccessTokenPayload = {
-   userId: number;
+  userId: number;
 };
 export type TokensPayload = {
   mobile: string;

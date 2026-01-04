@@ -1,10 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
-import { ConflictMessage, publicMessage } from 'src/common/enums/message.enum';
+import { ConflictMessage, NotFoundMessage, publicMessage } from 'src/common/enums/message.enum';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { log } from 'console';
 import { paginationGenerator, paginationSolver } from 'src/common/utils/pagination.util';
@@ -13,7 +13,7 @@ import { paginationGenerator, paginationSolver } from 'src/common/utils/paginati
 export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
-    private categoryRepository: Repository<CategoryEntity>,
+    private categoryRepository: Repository<CategoryEntity>
   ) {}
   async create(createCategoryDto: CreateCategoryDto) {
     let { title, priority } = createCategoryDto;
@@ -22,7 +22,7 @@ export class CategoryService {
     await this.categoryRepository.save(category);
     return {
       message: publicMessage.Created,
-      data: category,
+      data: category
     };
   }
 
@@ -31,25 +31,56 @@ export class CategoryService {
     const [categories, count] = await this.categoryRepository.findAndCount({
       skip,
       take: limit,
-      where: {},
+      where: {}
     });
     return {
       message: publicMessage.Success,
       data: categories,
-      pagination: paginationGenerator(count, limit, page),
+      pagination: paginationGenerator(count, limit, page)
     };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} category`;
+    const categories = this.categoryRepository.findOneBy({ id });
+    if (!categories) {
+      throw new NotFoundException(NotFoundMessage.CategoryNotFound);
+    }
+    return {
+      message: publicMessage.Success,
+      data: categories
+    };
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException(NotFoundMessage.CategoryNotFound);
+    }
+    const { title, priority } = updateCategoryDto;
+    if (title) {
+      category.title = title;
+    }
+    if (priority) {
+      category.priority = priority;
+    }
+
+    const saved = await this.categoryRepository.save(category);
+
+    return {
+      message: publicMessage.Updated,
+      data: saved
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const category = await this.categoryRepository.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException(NotFoundMessage.CategoryNotFound);
+    }
+    await this.categoryRepository.delete({ id });
+    return {
+      message: publicMessage.Deleted
+    };
   }
   async checkExistAndResolveTitle(inputTitle: string) {
     const title = inputTitle?.trim().toLowerCase();

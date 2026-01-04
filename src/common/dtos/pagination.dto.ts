@@ -6,7 +6,7 @@ export class PaginationDto {
   @ApiPropertyOptional({
     description: 'Page number',
     example: 1,
-    type: Number,
+    type: Number
   })
   @IsOptional()
   @Type(() => Number)
@@ -17,7 +17,7 @@ export class PaginationDto {
   @ApiPropertyOptional({
     description: 'Number of items per page',
     example: 10,
-    type: Number,
+    type: Number
   })
   @IsOptional()
   @Type(() => Number)

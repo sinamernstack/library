@@ -4,7 +4,7 @@ import {
   Inject,
   Injectable,
   Scope,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
 import { AuthType } from './enum/type.enum';
@@ -15,12 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ProfileEntity } from '../user/entities/profile.entity';
-import {
-  AuthMessage,
-  AuthSuccessMessage,
-  BadRequestMessage,
-  SendOtpMessage,
-} from '../../common/enums/message.enum';
+import { AuthMessage, BadRequestMessage, NotFoundMessage } from '../../common/enums/message.enum';
 import { OtpEntity } from '../user/entities/otp.entity';
 import { randomInt } from 'crypto';
 import { TokenService } from './token.service';
@@ -28,7 +23,6 @@ import { CookieKeys } from 'src/common/enums/cookie.enum';
 import { Request, Response } from 'express';
 import { AuthResponse } from './types/response';
 import { REQUEST } from '@nestjs/core';
-import { AccessTokenPayload } from './types/payload';
 
 @Injectable({ scope: Scope.REQUEST }) //BARAYE DASTRESI BE REQUEST DAR KOLE INJA
 export class AuthService {
@@ -40,8 +34,7 @@ export class AuthService {
     @InjectRepository(OtpEntity)
     private otpRepository: Repository<OtpEntity>,
     private tokenService: TokenService,
-    @Inject(REQUEST) private request: Request,
-    
+    @Inject(REQUEST) private request: Request
   ) {}
   async userExistence(authDto: AuthDto, res: Response) {
     const { method, type, username } = authDto;
@@ -61,12 +54,9 @@ export class AuthService {
 
   async login(method: AuthMethod, username: string) {
     const validUsername = this.usernameValidator(method, username);
-    const user: UserEntity | any = await this.checkExistUser(
-      method,
-      validUsername,
-    );
+    const user: UserEntity | any = await this.checkExistUser(method, validUsername);
     if (!user) {
-      throw new UnauthorizedException(AuthMessage.UserNotFound);
+      throw new UnauthorizedException(NotFoundMessage.UserNotFound);
     }
     const otp = await this.sendOtp(user.id);
     const token = await this.tokenService.createOtpToken({ userId: user.id });
@@ -83,7 +73,7 @@ export class AuthService {
       throw new BadGatewayException(BadRequestMessage.InvalidRegisterData);
     }
     user = this.userRepository.create({
-      [method]: username /*bar asas method username ro zakhire mikone */,
+      [method]: username /*bar asas method username ro zakhire mikone */
       // username:
     });
 
@@ -96,7 +86,7 @@ export class AuthService {
 
     return {
       code: otp.otp_code,
-      token,
+      token
     };
   }
   async sendOtp(userId: number) {
@@ -113,7 +103,7 @@ export class AuthService {
       otp = this.otpRepository.create({
         otp_code: code,
         userId,
-        expires_at,
+        expires_at
       });
     }
 
@@ -151,7 +141,7 @@ export class AuthService {
       throw new UnauthorizedException(AuthMessage.InvalidCode);
     }
     const accessToken = this.tokenService.createAccessToken({ userId });
-    return { message: AuthSuccessMessage.LoginSuccess, accessToken };
+    return { message: AuthMessage.LoginSuccess, accessToken };
   }
 
   async checkExistUser(method: AuthMethod, username: string) {
@@ -159,18 +149,18 @@ export class AuthService {
 
     if (method === AuthMethod.Phone) {
       user = await this.userRepository.findOneBy({
-        phone: username,
+        phone: username
       });
     } else if (method === AuthMethod.Email) {
       user = await this.userRepository.findOneBy({
-        email: username,
+        email: username
       });
     } else if (method === AuthMethod.Username) {
       user = await this.userRepository.findOneBy({
-        username,
+        username
       });
     } else {
-      throw new BadGatewayException(AuthMessage.UserNotFound);
+      throw new BadGatewayException(NotFoundMessage.UserNotFound);
     }
     return user;
   }
@@ -197,11 +187,11 @@ export class AuthService {
     const { token } = result;
     res.cookie(CookieKeys.OTP, token, {
       httpOnly: true,
-      expires: new Date(Date.now() + 2 * 60 * 1000),
+      expires: new Date(Date.now() + 2 * 60 * 1000)
     });
     res.json({
-      message: SendOtpMessage.OtpSendSuccess,
-      code: result.code,
+      message: AuthMessage.OtpSendSuccess,
+      code: result.code
     });
   }
   async validateAccessToken(token: string) {
@@ -213,7 +203,7 @@ export class AuthService {
       }
       return user;
     } catch (error) {
-      throw new UnauthorizedException("login on your account ");
+      throw new UnauthorizedException('login on your account ');
     }
   }
 }

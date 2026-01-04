@@ -1,13 +1,8 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
-import {isJWT} from "class-validator";
-import {Request} from "express";
-import {AuthService} from "../auth.service";
-import { AuthMessage } from "src/common/enums/message.enum";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { isJWT } from 'class-validator';
+import { Request } from 'express';
+import { AuthService } from '../auth.service';
+import { AuthMessage } from 'src/common/enums/message.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,13 +15,12 @@ export class AuthGuard implements CanActivate {
     return true;
   }
   protected extractToken(request: Request) {
-    const {authorization} = request.headers;
-    if (!authorization || authorization?.trim() == "") {
+    const { authorization } = request.headers;
+    if (!authorization || authorization?.trim() == '') {
       throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
-      
     }
-    const [bearer, token] = authorization?.split(" ");
-    if (bearer?.toLowerCase() !== "bearer" || !token || !isJWT(token))
+    const [bearer, token] = authorization?.split(' ');
+    if (bearer?.toLowerCase() !== 'bearer' || !token || !isJWT(token))
       throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
     return token;
   }

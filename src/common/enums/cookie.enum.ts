@@ -1,3 +1,3 @@
-export enum CookieKeys{
-    OTP = 'otp'
+export enum CookieKeys {
+  OTP = 'otp'
 }

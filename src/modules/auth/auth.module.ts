@@ -15,11 +15,9 @@ import { CategoryService } from '../category/category.service';
 import { CategoryEntity } from '../category/entities/category.entity';
 
 @Module({
-  controllers: [AuthController,UserController],
-  providers: [AuthService,UserService,TokenService,JwtService,AuthGuard,CategoryService],exports: [AuthService,TokenService],
-  imports: [
-    UserModule,
-    TypeOrmModule.forFeature([UserEntity, ProfileEntity, OtpEntity,CategoryEntity])
-  ],
+  controllers: [AuthController, UserController],
+  providers: [AuthService, UserService, TokenService, JwtService, AuthGuard, CategoryService],
+  exports: [AuthService, TokenService],
+  imports: [UserModule, TypeOrmModule.forFeature([UserEntity, ProfileEntity, OtpEntity, CategoryEntity])]
 })
 export class AuthModule {}

@@ -1,4 +1,4 @@
 export enum AuthType {
-Login = 'login',
-Register = 'register'
+  Login = 'login',
+  Register = 'register'
 }
