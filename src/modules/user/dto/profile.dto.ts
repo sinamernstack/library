@@ -9,12 +9,9 @@ import {
   IsEnum,
   IsUrl
 } from 'class-validator';
+import { Gender } from '../enum/gender.enum';
 
-export enum GenderEnum {
-  MALE = 'male',
-  FEMALE = 'female',
-  OTHER = 'other'
-}
+
 
 export class ProfileDto {
   @ApiPropertyOptional({ example: 'john_doe' })
@@ -70,10 +67,10 @@ export class ProfileDto {
   linkdin_profile?: string;
 
   @ApiPropertyOptional({
-    enum: GenderEnum,
+    enum: Gender,
     nullable: true
   })
   @IsOptional()
-  @IsEnum(GenderEnum)
-  gender?: GenderEnum;
+  @IsEnum(Gender)
+  gender?: Gender;
 }
