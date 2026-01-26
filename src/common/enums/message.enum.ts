@@ -35,4 +35,6 @@ export enum BadRequestMessage {
   InvalidRegisterData = 'اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد'
 }
 
-export enum ValidationMessage {}
+export enum ValidationMessage {
+  InvalidImageFormat = "فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد"
+}

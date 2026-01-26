@@ -20,6 +20,6 @@ export class AuthDto {
 export class CheckOtpDto {
   @ApiProperty()
   @IsString()
-  @Length(5, 5)
+  @Length(6, 6)
   code: string;
 }

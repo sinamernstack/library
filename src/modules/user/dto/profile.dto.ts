@@ -1,17 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsString,
-  IsInt,
-  Min,
-  Max,
-  IsDateString,
-  IsEnum,
-  IsUrl
-} from 'class-validator';
+import { IsOptional, IsString, IsInt, Min, Max, IsDateString, IsEnum, IsUrl } from 'class-validator';
 import { Gender } from '../enum/gender.enum';
-
-
 
 export class ProfileDto {
   @ApiPropertyOptional({ example: 'john_doe' })
@@ -21,21 +10,17 @@ export class ProfileDto {
 
   @ApiPropertyOptional({ example: 25, nullable: true })
   @IsOptional()
-  @IsInt()
-  @Min(0)
-  @Max(120)
   age?: number;
 
   @ApiPropertyOptional({ example: 'Backend developer', nullable: true })
   @IsOptional()
   @IsString()
   bio?: string;
-  
 
   @ApiPropertyOptional({
     example: 'https://example.com/profile.jpg',
     nullable: true,
-    format:"binary"
+    format: 'binary'
   })
   @IsOptional()
   @IsString()

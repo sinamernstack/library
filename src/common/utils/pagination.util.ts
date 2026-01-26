@@ -1,4 +1,4 @@
-import { PaginationDto } from "../dtos/pagination.dto";
+import { PaginationDto } from '../dtos/pagination.dto';
 
 export function paginationSolver(paginationDto: PaginationDto) {
   let { page = 1, limit = 10 } = paginationDto;
@@ -27,4 +27,3 @@ export function paginationGenerator(count: number, limit: number, page: number) 
     hasPrevPage: page > 1
   };
 }
-

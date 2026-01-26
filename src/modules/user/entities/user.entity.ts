@@ -2,6 +2,7 @@ import { BaseEntity } from 'src/common/abstracts/base.entity';
 import { EntityName } from 'src/common/enums/entity.enum';
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm';
 import { OtpEntity } from './otp.entity';
+import { ProfileEntity } from './profile.entity';
 
 @Entity(EntityName.User)
 export class UserEntity extends BaseEntity {
@@ -22,9 +23,10 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'otpId' }) // نام فیلد کلید خارجی در دیتابیس
   otp: OtpEntity;
 
-  @CreateDateColumn({ type: 'timestamp', nullable: true })
-  created_at: Date;
+  @Column({ nullable: true })
+  profileId: number;
 
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updated_at: Date;
+  @OneToOne(() => ProfileEntity, profile => profile.user, { cascade: true })
+  @JoinColumn({ name: 'profileId' })
+  profile: ProfileEntity;
 }

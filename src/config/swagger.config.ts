@@ -10,7 +10,7 @@ export function SwaggerConfigInit(app: INestApplication): void {
     .setDescription('NestJS Virgool API description')
     .setVersion('0.0.1')
     .addBearerAuth(SwaggerAuthConfig(), 'Authorization')
-    .addServer('http://localhost:3000')
+    .addServer('http://localhost:3400')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, swaggerDocument);
