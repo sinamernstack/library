@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { REQUEST } from '@nestjs/core';
-import { NotFoundMessage, publicMessage } from 'src/common/enums/message.enum';
+import { publicMessage } from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
 import { Gender } from './enum/gender.enum';
 import { ProfileImages } from './types/files.type';
