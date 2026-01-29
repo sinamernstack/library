@@ -8,6 +8,9 @@ export class OtpEntity extends BaseEntity {
   @Column({ nullable: true })
   phone_number: string;
 
+  @Column({ enum: ["register","login"], nullable: true })
+  method: string; 
+  
   @Column()
   otp_code: string;
 

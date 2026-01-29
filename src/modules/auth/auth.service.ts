@@ -74,6 +74,7 @@ export class AuthService {
     }
     user = this.userRepository.create({
       [method]: username /*bar asas method username ro zakhire mikone */
+
       // username:
     });
 
@@ -82,6 +83,9 @@ export class AuthService {
     await this.userRepository.save(user);
 
     const otp = await this.sendOtp(user.id);
+    otp.method = method;
+    await this.otpRepository.save(otp);
+
     const token = await this.tokenService.createOtpToken({ userId: user.id });
 
     return {
@@ -96,6 +100,7 @@ export class AuthService {
     let existOtp = false;
 
     if (otp) {
+      
       existOtp = true;
       otp.otp_code = code;
       otp.expires_at = expires_at;
@@ -140,7 +145,13 @@ export class AuthService {
     if (otp.otp_code !== code) {
       throw new UnauthorizedException(AuthMessage.InvalidCode);
     }
-    const accessToken = this.tokenService.createAccessToken({ userId });
+    const accessToken = await this.tokenService.createAccessToken({ userId });
+    if(otp.method === AuthMethod.Email){
+      await this.userRepository.update({id:userId},{verifyEmail:true})
+    }
+    else if(otp.method === AuthMethod.Phone){
+      await this.userRepository.update({id:userId},{verifyPhone:true})
+    }
     return { message: AuthMessage.LoginSuccess, accessToken };
   }
 

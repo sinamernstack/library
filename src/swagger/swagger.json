@@ -410,6 +410,12 @@
         "bearerFormat": "JWT",
         "type": "http",
         "in": "header"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token",
+        "description": "Access token (Stored in cookie for secure access)"
       }
     },
     "schemas": {

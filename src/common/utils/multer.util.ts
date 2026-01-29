@@ -5,10 +5,7 @@ import { ValidationMessage } from '../enums/message.enum';
 import { BadRequestException } from '@nestjs/common';
 import { diskStorage } from 'multer';
 
-export type CallbackFunction = (error: any, destination: String) => void;
 export type MulterCallback = (error: Error | null, destination: string) => void;
-export type CallbackDestination = (error: any, destination: String) => void;
-export type CallbackFormat = (error: any, destination: any) => void;
 
 export type MulterFile = Express.Multer.File;
 
@@ -19,11 +16,7 @@ export function multerDestination(folderName: string) {
     callback(null, path);
   };
 }
-export function multerFilename(
-  req: Request,
-  file: MulterFile,
-  callback: (error: Error | null, filename: string) => void
-) {
+export function multerFilename(req: Request, file: MulterFile, callback: MulterCallback) {
   const ext = extname(file.originalname).toLowerCase();
 
   if (!isValidImageFormat(ext)) {
@@ -34,14 +27,6 @@ export function multerFilename(
   callback(null, filename);
 }
 
-// export function multerFilename(req: Request, file: any, callback: CallbackFormat) {
-//   const ext = extname(file.originalname).toLowerCase();
-//   if (!isValidImageFormat) {
-//     callback(new BadRequestException(ValidationMessage.InvalidImageFormat), null);
-//   }
-//   const filename = `${Date.now()}${ext}`;
-//   callback(null, filename);
-// }
 function isValidImageFormat(ext: string) {
   return ['.png', '.jpg', '.jpeg'].includes(ext);
 }

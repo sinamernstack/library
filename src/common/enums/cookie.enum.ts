@@ -1,3 +1,4 @@
 export enum CookieKeys {
-  OTP = 'otp'
+  OTP = 'otp',
+  AccessToken = "AccessToken"
 }

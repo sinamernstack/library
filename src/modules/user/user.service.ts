@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { ProfileDto } from './dto/profile.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,17 +6,23 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { REQUEST } from '@nestjs/core';
-import { publicMessage } from 'src/common/enums/message.enum';
+import { ConflictMessage, publicMessage } from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
 import { Gender } from './enum/gender.enum';
 import { ProfileImages } from './types/files.type';
+import { OtpEntity } from './entities/otp.entity';
+import { AuthService } from '../auth/auth.service';
+import { TokenService } from '../auth/token.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   constructor(
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
     @InjectRepository(ProfileEntity) private profileRepository: Repository<ProfileEntity>,
-    @Inject(REQUEST) private request
+    @InjectRepository(OtpEntity) private otpRepository: Repository<OtpEntity>,
+    @Inject(REQUEST) private request,
+    private authService: AuthService,
+    private tokenService: TokenService
   ) {}
   async changeProfile(profileDto: ProfileDto, files: ProfileImages) {
     let { image_profile, bg_image } = files;
@@ -59,8 +65,26 @@ export class UserService {
       data: updatedProfile
     };
   }
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const [users, count] = await this.userRepository.findAndCount({
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        profile: {
+          nick_name: true,
+          image_profile: true
+        }
+      },
+      relations: {
+        profile: true
+      }
+    });
+
+    return {
+      message: publicMessage.Success,
+      data: { users, count }
+    };
   }
 
   findOneProfile() {
@@ -69,6 +93,20 @@ export class UserService {
       where: { id },
       relations: ['profile']
     });
+  }
+  async changeEmail(email: string) {
+    const { id } = this.request.user;
+    const user = await this.userRepository.findOneBy({ email });
+    if (user && user?.id != id) {
+      throw new ConflictException(ConflictMessage.Email);
+    } else if (user && user.id == id) {
+      return { message: publicMessage.Updated };
+    }
+    if (user && user?.id === id) {
+      user.newEmail = email;
+      const otp = await this.authService.sendOtp(user.id);
+      // const token =await this.tokenService.createAccessToken()
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -4,7 +4,13 @@ export type CookiePayload = {
 export type AccessTokenPayload = {
   userId: number;
 };
-export type TokensPayload = {
-  mobile: string;
-  id: number;
+
+
+
+export type EmailAccessTokenPayload = {
+  userId: number;
+};
+export type EmailTokensPayload = {
+  email: string;
+  
 };

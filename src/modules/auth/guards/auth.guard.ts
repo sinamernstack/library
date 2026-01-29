@@ -14,14 +14,25 @@ export class AuthGuard implements CanActivate {
     request.user = await this.authService.validateAccessToken(token);
     return true;
   }
-  protected extractToken(request: Request) {
-    const { authorization } = request.headers;
-    if (!authorization || authorization?.trim() == '') {
-      throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
-    }
-    const [bearer, token] = authorization?.split(' ');
-    if (bearer?.toLowerCase() !== 'bearer' || !token || !isJWT(token))
-      throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
-    return token;
+protected extractToken(request: Request) {
+  // 1️⃣ اول از Cookie
+  const cookieToken = request.cookies?.access_token;
+  if (cookieToken && isJWT(cookieToken)) {
+    return cookieToken;
   }
+
+  // 2️⃣ fallback به Authorization Header
+  const { authorization } = request.headers;
+  if (!authorization || authorization.trim() === '') {
+    throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
+  }
+
+  const [bearer, token] = authorization.split(' ');
+  if (bearer?.toLowerCase() !== 'bearer' || !token || !isJWT(token)) {
+    throw new UnauthorizedException(AuthMessage.LoginOnYourAccount);
+  }
+
+  return token;
+}
+
 }

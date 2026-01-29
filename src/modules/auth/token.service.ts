@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
-import { AccessTokenPayload, CookiePayload } from './types/payload';
+import { AccessTokenPayload, CookiePayload, EmailAccessTokenPayload, EmailTokensPayload } from './types/payload';
 import { AuthMessage } from 'src/common/enums/message.enum';
 dotenv.config();
 
@@ -42,4 +42,23 @@ export class TokenService {
       throw new UnauthorizedException(AuthMessage.TryAgain);
     }
   }
+
+
+  createEmailToken(payload: EmailAccessTokenPayload) {
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN_SECRET,
+      expiresIn: '1y'
+    });
+    return token;
+  }
+  verifyEmailToken(token: string): EmailTokensPayload {
+    try {
+      return this.jwtService.verify(token, {
+        secret: process.env.ACCESS_TOKEN_SECRET
+      });
+    } catch (error) {
+      throw new UnauthorizedException(AuthMessage.TryAgain);
+    }
+  }
 }
+

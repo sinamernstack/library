@@ -12,8 +12,19 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true, nullable: true })
   phone: string;
 
+  
+
   @Column({ unique: true, nullable: true })
   email: string;
+
+  @Column({  nullable: true })
+  newEmail: string;
+
+  @Column({ default: false, nullable: true })
+  verifyEmail: boolean;
+  
+  @Column({ default: false, nullable: true })
+  verifyPhone: boolean;
 
   // ذخیره ID مربوط به OTP
   @Column({ nullable: true })

@@ -19,7 +19,8 @@ export enum publicMessage {
 
 export enum ConflictMessage {
   CategoryTitleExist = 'عنوان دسته بندی قبلا ثبت شده است',
-  CategoryPriorityExist = 'اولویت دسته بندی قبلا ثبت شده است'
+  CategoryPriorityExist = 'اولویت دسته بندی قبلا ثبت شده است',
+  Email="ایمیل فبلن توسط کاربری دیگر استفاده شده است"
 }
 export enum NotFoundMessage {
   CategoryNotFound = 'دسته بندی یافت نشد',
