@@ -29,7 +29,7 @@ async checkOtp(
   const result = await this.authService.checkOtp(checkOtpDto.code);
 
   // ✅ Cookie (امن)
-  res.cookie(CookieKeys.AccessToken, result.accessToken, {
+  res.cookie(CookieKeys.PhoneOTP, result.accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

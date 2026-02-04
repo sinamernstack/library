@@ -22,7 +22,7 @@ export function SwaggerConfigInit(app: INestApplication): void {
     })
     
     // سرور برای تست (Optional)
-    .addServer('http://localhost:3400')
+    .addServer(`http://localhost:${process.env.PORT}`)
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, options);

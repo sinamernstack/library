@@ -144,6 +144,35 @@
         ]
       }
     },
+    "/user/change-email": {
+      "patch": {
+        "operationId": "UserController_changeEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
     "/auth/user-esxistence": {
       "post": {
         "operationId": "AuthController_userExistence",
@@ -400,7 +429,7 @@
   "tags": [],
   "servers": [
     {
-      "url": "http://localhost:3400"
+      "url": "http://localhost:3500"
     }
   ],
   "components": {
@@ -473,6 +502,17 @@
       "UpdateUserDto": {
         "type": "object",
         "properties": {}
+      },
+      "ChangeEmailDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
       },
       "AuthType": {
         "type": "string",

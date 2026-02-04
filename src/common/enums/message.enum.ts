@@ -33,9 +33,12 @@ export enum NotFoundMessage {
 export enum BadRequestMessage {
   UserAlreadyExist = 'حساب کاربری قبلا ثبت شده است',
   InvalidLoginData = 'اطلاعات ارسال شده برای ورود صحیح نمیباشد',
-  InvalidRegisterData = 'اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد'
+  InvalidRegisterData = 'اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد',
+  SomethingIsWrong ='مشکلی پیش آمده است'
 }
 
 export enum ValidationMessage {
-  InvalidImageFormat = "فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد"
+  InvalidImageFormat = "فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد",
+  InvalidEmailFormat = "فرمت ایمیل وارد شده صحیح نمیباشد",
+  InvalidPhoneFormat = "فرمت شماره تلفن وارد شده صحیح نمیباشد"
 }

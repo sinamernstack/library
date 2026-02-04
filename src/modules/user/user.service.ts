@@ -105,7 +105,12 @@ export class UserService {
     if (user && user?.id === id) {
       user.newEmail = email;
       const otp = await this.authService.sendOtp(user.id);
-      // const token =await this.tokenService.createAccessToken()
+      const token =await this.tokenService.createEmailToken({ email});
+      return {
+        message: publicMessage.Updated,
+        code: otp.otp_code,
+        token
+      };
     }
   }
 
