@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, Scope, Bad, BadRequestExceptionRequestException, BadRequestExceptionBadRequestException, BadRequestException } from '@nestjs/common';
 import { ProfileDto } from './dto/profile.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { REQUEST } from '@nestjs/core';
-import { ConflictMessage, publicMessage } from 'src/common/enums/message.enum';
+import { ConflictMessage, NotFoundMessage, publicMessage } from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
 import { Gender } from './enum/gender.enum';
 import { ProfileImages } from './types/files.type';
@@ -111,6 +111,26 @@ export class UserService {
         code: otp.otp_code,
         token
       };
+    }
+  }
+  async verifyEmail(token: string) {
+    const {id }= this.request.user
+ 
+
+  }
+  async checkOtp(userId: number, code: string) {
+       const otp = await this.otpRepository.findOneBy({ userId });
+
+    if (!otp) {
+      throw new BadRequestException(NotFoundMessage.NotFound);
+    }
+        const dateNow = new Date();
+
+    if (otp.expires_at < dateNow) {
+      throw new BadRequestException(AuthMessage.ExpireCode);
+    }
+    if (otp.otp_code !== code) {
+      throw new BadRequestException(AuthMessage.InvalidCode);
     }
   }
 
