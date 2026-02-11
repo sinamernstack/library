@@ -9,10 +9,10 @@ export function SwaggerConfigInit(app: INestApplication): void {
     .setTitle('Virgool API')
     .setDescription('NestJS Virgool API description')
     .setVersion('0.0.1')
-    
+
     // اضافه کردن Bearer Token به عنوان Authorization
     .addBearerAuth(SwaggerAuthConfig(), 'Authorization')
-    
+
     // اضافه کردن اطلاعات برای استفاده از کوکی‌ها
     .addSecurity('cookieAuth', {
       type: 'apiKey',
@@ -20,14 +20,14 @@ export function SwaggerConfigInit(app: INestApplication): void {
       name: 'access_token',
       description: 'Access token (Stored in cookie for secure access)'
     })
-    
+
     // سرور برای تست (Optional)
     .addServer(`http://localhost:${process.env.PORT}`)
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, swaggerDocument);
-  
+
   // ذخیره کردن فایل Swagger JSON برای دسترسی راحت‌تر
   const swaggerJsonPath = join(process.cwd(), '/src/swagger/swagger.json');
   writeFileSync(swaggerJsonPath, JSON.stringify(swaggerDocument, null, 2));

@@ -6,11 +6,10 @@ export type AccessTokenPayload = {
 };
 
 
-
-// export type EmailAccessTokenPayload = {
-//   userId: number;
-// };
 export type EmailTokensPayload = {
   email: string;
-  
+};
+
+export type PhoneTokensPayload = {
+  phone: string;
 };

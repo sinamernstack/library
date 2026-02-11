@@ -19,7 +19,6 @@ async function bootstrap() {
   app.use(cookieParser(process.env.COOKIE_SECRET));
   SwaggerConfigInit(app);
 
-  
   await app.listen(process.env.PORT, () => console.log(`Server running on port : ${process.env.PORT}`));
   console.log(`Swagger running on : http://localhost:${process.env.PORT}/swagger`);
 }

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
-import { AccessTokenPayload, CookiePayload, EmailTokensPayload } from './types/payload';
+import { AccessTokenPayload, CookiePayload, EmailTokensPayload, PhoneTokensPayload } from './types/payload';
 import { AuthMessage, BadRequestMessage } from 'src/common/enums/message.enum';
 dotenv.config();
 
@@ -43,7 +43,6 @@ export class TokenService {
     }
   }
 
-
   createEmailToken(payload: EmailTokensPayload) {
     const token = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
@@ -60,5 +59,21 @@ export class TokenService {
       throw new BadRequestException(BadRequestMessage.SomethingIsWrong);
     }
   }
-}
 
+  createPhoneToken(payload: PhoneTokensPayload) {
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.PHONE_TOKEN_SECRET,
+      expiresIn: '24h'
+    });
+    return token;
+  }
+  verifyPhoneToken(token: string): PhoneTokensPayload {
+    try {
+      return this.jwtService.verify(token, {
+        secret: process.env.PHONE_TOKEN_SECRET
+      });
+    } catch (error) {
+      throw new BadRequestException(BadRequestMessage.SomethingIsWrong);
+    }
+  }
+}

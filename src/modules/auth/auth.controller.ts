@@ -20,29 +20,25 @@ export class AuthController {
     return this.authService.userExistence(authDto, res);
   }
 
-@Post(`check-otp`)
-@ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
-async checkOtp(
-  @Body() checkOtpDto: CheckOtpDto,
-  @Res({ passthrough: true }) res: Response
-) {
-  const result = await this.authService.checkOtp(checkOtpDto.code);
+  @Post(`check-otp`)
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async checkOtp(@Body() checkOtpDto: CheckOtpDto, @Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.checkOtp(checkOtpDto.code);
 
-  // ✅ Cookie (امن)
-  res.cookie(CookieKeys.PhoneOTP, result.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 15 * 60 * 1000
-  });
+    // ✅ Cookie (امن)
+    res.cookie(CookieKeys.PhoneOTP, result.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000
+    });
 
-  // ✅ Token هم برمی‌گرده برای فرانت
-  return {
-    message: result.message,
-    accessToken: result.accessToken
-  };
-}
-
+    // ✅ Token هم برمی‌گرده برای فرانت
+    return {
+      message: result.message,
+      accessToken: result.accessToken
+    };
+  }
 
   @Get('check-login')
   @ApiBearerAuth('Authorization')

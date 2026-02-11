@@ -33,4 +33,4 @@ export class ProfileEntity extends BaseEntity {
 
   @OneToOne(() => UserEntity, user => user.profile, { onDelete: 'CASCADE' })
   user: UserEntity;
-} 
+}

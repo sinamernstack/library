@@ -145,12 +145,17 @@
       }
     },
     "/user/change-email": {
-      "patch": {
+      "post": {
         "operationId": "UserController_changeEmail",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailDto"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ChangeEmailDto"
@@ -159,7 +164,143 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/verify-email-otp": {
+      "post": {
+        "operationId": "UserController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOtpDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/change-phone": {
+      "post": {
+        "operationId": "UserController_changePhone",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePhoneDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePhoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/verify-phone-otp": {
+      "post": {
+        "operationId": "UserController_verifyPhone",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOtpDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/change-username": {
+      "post": {
+        "operationId": "UserController_changeUsername",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUsernameDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUsernameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
             "description": ""
           }
         },
@@ -507,11 +648,46 @@
         "type": "object",
         "properties": {
           "email": {
-            "type": "string"
+            "type": "string",
+            "example": "test@example.com"
           }
         },
         "required": [
           "email"
+        ]
+      },
+      "CheckOtpDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "ChangePhoneDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone"
+        ]
+      },
+      "ChangeUsernameDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "DUMMY_USER"
+          }
+        },
+        "required": [
+          "username"
         ]
       },
       "AuthType": {
@@ -554,17 +730,6 @@
           "username",
           "type",
           "method"
-        ]
-      },
-      "CheckOtpDto": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code"
         ]
       },
       "CreateCategoryDto": {

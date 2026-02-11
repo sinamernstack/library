@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsDateString, IsEnum, IsUrl, IsEmail, IsPhoneNumber, IsMobilePhone } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsDateString,
+  IsEnum,
+  IsUrl,
+  IsEmail,
+  IsPhoneNumber,
+  IsMobilePhone,
+  IsNotEmpty,
+  Length
+} from 'class-validator';
 import { Gender } from '../enum/gender.enum';
 import { ValidationMessage } from 'src/common/enums/message.enum';
 
@@ -61,12 +72,25 @@ export class ProfileDto {
   gender?: Gender;
 }
 export class ChangeEmailDto {
-  @ApiProperty()
-  @IsEmail(undefined, {message: ValidationMessage.InvalidEmailFormat })
-  email: string;    
+  @ApiProperty({
+    example: 'test@example.com'
+  })
+  @IsNotEmpty({ message: ValidationMessage.EmailRequired })
+  @IsEmail({}, { message: ValidationMessage.InvalidEmailFormat })
+  email: string;
 }
 export class ChangePhoneDto {
   @ApiProperty()
   @IsMobilePhone('fa-IR', undefined, { message: ValidationMessage.InvalidPhoneFormat })
-  email: string;
+  phone: string;
+}
+
+export class ChangeUsernameDto {
+  @ApiProperty({
+    example: 'DUMMY_USER'
+  })
+  @IsNotEmpty({ message: ValidationMessage.UsernameRequired })
+  @IsString({ message: ValidationMessage.InvalidUsernameFormat })
+  @Length(4, 50,)
+  username: string;
 }

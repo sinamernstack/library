@@ -58,7 +58,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException(NotFoundMessage.UserNotFound);
     }
-    const otp = await this.sendOtp(user.id);
+    const otp = await this.sendOtp(user.id, method);
     const token = await this.tokenService.createOtpToken({ userId: user.id });
     return { code: otp.otp_code, token };
   }
@@ -82,9 +82,7 @@ export class AuthService {
     user.username = `m_${user.id}`;
     await this.userRepository.save(user);
 
-    const otp = await this.sendOtp(user.id);
-    otp.method = method;
-    await this.otpRepository.save(otp);
+    const otp = await this.sendOtp(user.id, method);
 
     const token = await this.tokenService.createOtpToken({ userId: user.id });
 
@@ -93,22 +91,23 @@ export class AuthService {
       token
     };
   }
-  async sendOtp(userId: number) {
+  async sendOtp(userId: number, method: AuthMethod) {
     const code = randomInt(100000, 999999).toString();
     const expires_at = new Date(Date.now() + 2 * 60 * 1000);
     let otp: OtpEntity | any = await this.otpRepository.findOneBy({ userId });
     let existOtp = false;
 
     if (otp) {
-      
       existOtp = true;
       otp.otp_code = code;
       otp.expires_at = expires_at;
+      otp.method = method;
     } else {
       otp = this.otpRepository.create({
         otp_code: code,
         userId,
-        expires_at
+        expires_at,
+        method
       });
     }
 
@@ -146,11 +145,10 @@ export class AuthService {
       throw new UnauthorizedException(AuthMessage.InvalidCode);
     }
     const accessToken = await this.tokenService.createAccessToken({ userId });
-    if(otp.method === AuthMethod.Email){
-      await this.userRepository.update({id:userId},{verifyEmail:true})
-    }
-    else if(otp.method === AuthMethod.Phone){
-      await this.userRepository.update({id:userId},{verifyPhone:true})
+    if (otp.method === AuthMethod.Email) {
+      await this.userRepository.update({ id: userId }, { verifyEmail: true });
+    } else if (otp.method === AuthMethod.Phone) {
+      await this.userRepository.update({ id: userId }, { verifyPhone: true });
     }
     return { message: AuthMessage.LoginSuccess, accessToken };
   }

@@ -18,7 +18,7 @@ import { UserService } from './user.service';
 
 import { UpdateUserDto } from './dto/user.dto';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ChangeEmailDto, ProfileDto } from './dto/profile.dto';
+import { ChangeEmailDto, ChangePhoneDto, ChangeUsernameDto, ProfileDto } from './dto/profile.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
@@ -27,6 +27,8 @@ import { SwaggerConsumes } from 'src/common/enums/swagger-consume.enum';
 import { uploadedOptionalFiles } from 'src/common/decorators/multerUploadedFIles.decorator';
 import { publicMessage } from 'src/common/enums/message.enum';
 import { CookieKeys } from 'src/common/enums/cookie.enum';
+import { CheckOtpDto } from '../auth/dto/auth.dto';
+import { Request, Response } from 'express';
 
 @Controller('user')
 @ApiTags('user')
@@ -82,28 +84,71 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Patch('/change-email')
-async changeEmail(@Body() emailDto: ChangeEmailDto, @Res({ passthrough: true }) res:Request) {
-  const result = await this.userService.changeEmail(emailDto.email);
+  @Post('/change-email')
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async changeEmail(@Body() emailDto: ChangeEmailDto, @Res({ passthrough: true }) res: Response) {
+    const result = await this.userService.changeEmail(emailDto.email);
 
-  if (!result || result.message) {
-    throw new BadRequestException(result?.message || 'Unknown error');
+    if (!result) {
+      throw new BadRequestException(publicMessage.Faild);
+    }
+
+    const { message, code, token } = result;
+
+    if (token) {
+      res.cookie(CookieKeys.EmailOTP, token, {
+        maxAge: 2 * 60 * 1000,
+        httpOnly: true
+      });
+    }
+
+    return {
+      message,
+      code
+    };
   }
 
-  const { code, token } = result;
+  @Post('/verify-email-otp')
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async verifyEmail(@Body() otpDto: CheckOtpDto) {
+    return this.userService.verifyEmail(otpDto.code);
+  }
 
-  return {
-    message: publicMessage.Success,
-    code,
-    cookie: {
-      key: CookieKeys.EmailOTP,
-      value: token,
-      maxAge: 2 * 60 * 1000,
-      httpOnly: true,
-    },
-  };
-}
+  @Post('/change-phone')
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async changePhone(@Body() phoneDto: ChangePhoneDto, @Res({ passthrough: true }) res: Response) {
+    const result = await this.userService.changePhone(phoneDto.phone);
 
+    if (!result) {
+      throw new BadRequestException(publicMessage.Faild);
+    }
+
+    const { message, code, token } = result;
+
+    if (token) {
+      res.cookie(CookieKeys.PhoneOTP, token, {
+        maxAge: 2 * 60 * 1000,
+        httpOnly: true
+      });
+    }
+
+    return {
+      message,
+      code
+    };
+  }
+
+  @Post('/verify-phone-otp')
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async verifyPhone(@Body() otpDto: CheckOtpDto) {
+    return this.userService.verifyPhone(otpDto.code);
+  }
+
+  @Post('/change-username')
+  @ApiConsumes(SwaggerConsumes.URLENCODED, SwaggerConsumes.JSON)
+  async changeUsername(@Body() usernameDto: ChangeUsernameDto) {
+    return this.userService.changeUsername(usernameDto.username);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

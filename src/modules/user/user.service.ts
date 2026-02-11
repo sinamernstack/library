@@ -1,4 +1,12 @@
-import { ConflictException, Inject, Injectable, NotFoundException, Scope, Bad, BadRequestExceptionRequestException, BadRequestExceptionBadRequestException, BadRequestException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+  BadRequestException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { ProfileDto } from './dto/profile.dto';
 import { UpdateUserDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,13 +14,23 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { REQUEST } from '@nestjs/core';
-import { ConflictMessage, NotFoundMessage, publicMessage } from 'src/common/enums/message.enum';
+import {
+  AuthMessage,
+  BadRequestMessage,
+  ConflictMessage,
+  NotFoundMessage,
+  publicMessage
+} from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
 import { Gender } from './enum/gender.enum';
 import { ProfileImages } from './types/files.type';
 import { OtpEntity } from './entities/otp.entity';
 import { AuthService } from '../auth/auth.service';
 import { TokenService } from '../auth/token.service';
+import { CookieKeys } from 'src/common/enums/cookie.enum';
+import { AuthMethod } from '../auth/enum/method.enum';
+import { access } from 'fs';
+import e from 'express';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -99,32 +117,97 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ email });
     if (user && user?.id != id) {
       throw new ConflictException(ConflictMessage.Email);
-    } else if (user && user.id == id) {
+    } else if (user && user?.id == id) {
       return { message: publicMessage.Updated };
     }
-    if (user && user?.id === id) {
-      user.newEmail = email;
-      const otp = await this.authService.sendOtp(user.id);
-      const token =await this.tokenService.createEmailToken({ email});
-      return {
-        message: publicMessage.Updated,
-        code: otp.otp_code,
-        token
-      };
-    }
-  }
-  async verifyEmail(token: string) {
-    const {id }= this.request.user
- 
+    await this.userRepository.update({ id }, { newEmail: email });
+    const otp = await this.authService.sendOtp(id, AuthMethod.Email);
+    const token = this.tokenService.createEmailToken({ email });
 
+    return {
+      message: publicMessage.Updated,
+      code: otp.otp_code,
+      token
+    };
   }
+  async verifyEmail(code: string) {
+    const { id: userId, newEmail } = this.request.user;
+    const token = this.request.cookies?.[CookieKeys.OTP];
+    if (!token) {
+      throw new UnauthorizedException(AuthMessage.ExpireCode);
+    }
+    const { email } = this.tokenService.verifyEmailToken(token);
+    if (email !== newEmail) {
+      throw new BadRequestException(BadRequestMessage.InvalidEmail);
+    }
+    const otp = await this.checkOtp(userId, code);
+    if (otp.method !== AuthMethod.Email) {
+      throw new BadRequestException(BadRequestMessage.SomethingIsWrong);
+    }
+    const accessToken = await this.tokenService.createAccessToken({ userId });
+    await this.userRepository.update({ id: userId }, { email, verifyEmail: true, newEmail: undefined });
+    return { message: publicMessage.Updated, accessToken };
+  }
+
+  async changePhone(phone: string) {
+    const { id } = this.request.user;
+    const user = await this.userRepository.findOneBy({ phone });
+    if (user && user?.id != id) {
+      throw new ConflictException(ConflictMessage.Phone);
+    } else if (user && user?.id == id) {
+      return { message: publicMessage.Updated };
+    }
+    await this.userRepository.update({ id }, { newPhone: phone });
+    const otp = await this.authService.sendOtp(id, AuthMethod.Phone);
+    const token = this.tokenService.createPhoneToken({ phone });
+
+    return {
+      message: publicMessage.Updated,
+      code: otp.otp_code,
+      token
+    };
+  }
+  async verifyPhone(code: string) {
+    const { id: userId, newPhone } = this.request.user;
+    const token = this.request.cookies?.[CookieKeys.PhoneOTP];
+    if (!token) {
+      throw new UnauthorizedException(AuthMessage.ExpireCode);
+    }
+    const { phone } = this.tokenService.verifyPhoneToken(token);
+    if (phone !== newPhone) {
+      throw new BadRequestException(BadRequestMessage.InvalidPhone);
+    }
+    const otp = await this.checkOtp(userId, code);
+    if (otp.method !== AuthMethod.Phone) {
+      throw new BadRequestException(BadRequestMessage.SomethingIsWrong);
+    }
+    const accessToken = await this.tokenService.createAccessToken({ userId });
+    await this.userRepository.update({ id: userId }, { phone, verifyPhone: true, newPhone: undefined });
+    return { message: publicMessage.Updated, accessToken };
+  }
+
+  async changeUsername(username: string) {
+    const { id } = this.request.user;
+    const user = await this.userRepository.findOneBy({ username });
+    if (user && user?.id != id) {
+      throw new ConflictException(ConflictMessage.Username);
+    } else if (user && user?.id == id) {
+      return { message: publicMessage.Updated };
+    }
+    await this.userRepository.update({ id }, { username });
+
+    return {
+      message: publicMessage.Updated
+    };
+  }
+
   async checkOtp(userId: number, code: string) {
-       const otp = await this.otpRepository.findOneBy({ userId });
+    const otp = await this.otpRepository.findOneBy({ userId });
 
     if (!otp) {
       throw new BadRequestException(NotFoundMessage.NotFound);
     }
-        const dateNow = new Date();
+    const dateNow = new Date();
 
     if (otp.expires_at < dateNow) {
       throw new BadRequestException(AuthMessage.ExpireCode);
@@ -132,6 +215,7 @@ export class UserService {
     if (otp.otp_code !== code) {
       throw new BadRequestException(AuthMessage.InvalidCode);
     }
+    return otp;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -140,5 +224,8 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+    findOne(id: number) {
+    return this.userRepository.findOneBy({ id });
   }
 }

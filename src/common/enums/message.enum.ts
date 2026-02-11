@@ -20,7 +20,9 @@ export enum publicMessage {
 export enum ConflictMessage {
   CategoryTitleExist = 'عنوان دسته بندی قبلا ثبت شده است',
   CategoryPriorityExist = 'اولویت دسته بندی قبلا ثبت شده است',
-  Email="ایمیل فبلن توسط کاربری دیگر استفاده شده است"
+  Email = 'ایمیل فبلن توسط کاربری دیگر استفاده شده است',
+  Phone = 'شماره تلفن قبلا توسط کاربری دیگر استفاده شده است',
+  Username = 'نام کاربری قبلا توسط کاربری دیگر استفاده شده است'
 }
 export enum NotFoundMessage {
   CategoryNotFound = 'دسته بندی یافت نشد',
@@ -34,11 +36,17 @@ export enum BadRequestMessage {
   UserAlreadyExist = 'حساب کاربری قبلا ثبت شده است',
   InvalidLoginData = 'اطلاعات ارسال شده برای ورود صحیح نمیباشد',
   InvalidRegisterData = 'اطلاعات ارسال شده برای ثبت نام صحیح نمیباشد',
-  SomethingIsWrong ='مشکلی پیش آمده است'
+  SomethingIsWrong = 'مشکلی پیش آمده است',
+  InvalidEmail = 'ایمیل وارد شده صحیح نمیباشد',
+  InvalidPhone = 'شماره تلفن وارد شده صحیح نمیباشد',
+  InvalidImageFormat = 'فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد'
 }
 
 export enum ValidationMessage {
-  InvalidImageFormat = "فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد",
-  InvalidEmailFormat = "فرمت ایمیل وارد شده صحیح نمیباشد",
-  InvalidPhoneFormat = "فرمت شماره تلفن وارد شده صحیح نمیباشد"
+  InvalidImageFormat = 'فرمت تصویر انتخاب شده باید از نوع jpg jpeg png باشد',
+  InvalidEmailFormat = 'فرمت ایمیل وارد شده صحیح نمیباشد',
+  InvalidPhoneFormat = 'فرمت شماره تلفن وارد شده صحیح نمیباشد',
+  EmailRequired = 'ایمیل الزامی است',
+  UsernameRequired = 'نام کاربری الزامی است',
+  InvalidUsernameFormat = 'فرمت نام کاربری صحیح نمیباشد'
 }
